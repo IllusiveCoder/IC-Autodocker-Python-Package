@@ -32,7 +32,7 @@ class ICAutoDocker():
             subprocess.call(filepathDocker + " batch.exe", shell=True)
             subprocess.call(filepathVSCode + " batch.exe", shell=True)
         except:
-            pass
+            raise "ERROR, Download wasn't successful!"
 
     def installation_docker():
         """Installation of Docker."""
@@ -44,7 +44,7 @@ class ICAutoDocker():
                 file.write(download.content)
             subprocess.call(filepath + " batch.exe", shell=True)
         except:
-            pass
+            raise "ERROR, Download wasn't successful!"
 
     def installtion_vscode():
         """Installation of VS Code."""
@@ -56,12 +56,12 @@ class ICAutoDocker():
                 file.write(download.content)
             subprocess.call(filepath + " batch.exe", shell=True)
         except:
-            pass
-
+            raise "ERROR, Download wasn't successful!"
+            
     def create_container(containername):
         """Creation of container with name.
         Example: ICAutoDocker.create_container("whalecontainer")"""
-        os.system(f"docker {containername} create")
+        os.system(f"docker create {containername}")
 
     def edit_container(containername):
         """Editing of a specific container.
@@ -73,66 +73,95 @@ class ICAutoDocker():
         Example: ICAutoDocker.delete_container("whalecontainer")"""
         os.system(f"docker rm /{containername}")
 
-    def run_container(containername:str, Port:str):
-        """Starting a specific container, optionally with port.
+    def start_container(containername:str, Port:str):
+        """Running a specific container, optionally with port.
         Example: ICAutoDocker.run("whalecontainer","3000")"""
         if not Port:
-            os.system(f"docker {containername} run")
+            os.system(f"docker run {containername}")
         else:
-            os.system(f"docker -p {Port}:{Port} {containername} run")
+            os.system(f"docker run -p {Port}:{Port} {containername}")
+            
+    def run_container(containername):
+        """Running a specific container, optionally with port.
+        Example: ICAutoDocker.start("whalecontainer")"""
+        os.system(f"docker start {containername}")
 
     def stop_container(containername):
+        """Stopping  the running container.
+        Example: ICAutoDocker.stop_container("whalecontainer")"""
         os.system(f"docker stop {containername}")
 
     def restart_container(containername):
+        """Restarting a container.
+        Example: ICAutoDocker.restart_container("whalecontainer")"""
         os.system(f"docker restart {containername}")
 
     def change_containername(containername, newcontainername):
+        """Renaming containers.
+        Example: ICAutoDocker.change_containername("whalecontainer", "whalecontainer2")"""
         os.system(f" docker rename {containername} {newcontainername}")
 
     def list_of_containers():
+        """Showing list of all containers.
+        Example: ICAutoDocker.list_of_containers()"""
         os.system("docker ps")
-    #-------------------------------------------------------------------------------------------------------------------------#
     #-------------------------------------------------Image Commands----------------------------------------------------------#
 
     def create_image(username, imagename):
+        """Creating image for container.
+        Example: ICAutoDocker.create_image("User", "whaleImage")"""
         os.system(f"docker build {username}/{imagename}")
 
     def delete_image(imagename):
+        """Deleting image.
+        Example: ICAutoDocker.delete_image("whaleImage")"""
         os.system(f"docker rmi {imagename}")
 
     def change_imagename(imagename,newimagename):
+        """Renaming image.
+        Example: ICAutoDocker.change_imagename("whaleImage", "whaleImage2")"""
         os.system(f"docker tag {imagename} {newimagename}")
 
     def list_of_images():
+        """Lists all  images.
+        Example: ICAutoDocker.list_of_images()"""
         os.system("docker images")
+    #-------------------------------------------------Other Commands----------------------------------------------------------#
 
-    def touch_dockerfile():
+    def touch_dockerfile_node():
+        """Creating example docker project with NodeJS.
+        Official example from docker website.
+        Example: ICAutoDocker.touch_dockerfile_node()"""
         os.system("touch Dockerfile")
         dockerfile = open("Dockerfile", "w")
         dockerfile.write("""FROM node:16
+        # Create app directory
+        WORKDIR /usr/src/app
 
-# Create app directory
-WORKDIR /usr/src/app
+        # Install app dependencies
+        # A wildcard is used to ensure both package.json AND package-lock.json are copied
+        # where available (npm@5+)
+        COPY package*.json ./
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
+        RUN npm install
+        # If you are building your code for production
+        # RUN npm ci --only=production
 
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
+        # Bundle app source
+        COPY . .
 
-# Bundle app source
-COPY . .
-
-EXPOSE 8080
-CMD [ "node", "server.js" ]
-""")
+        EXPOSE 8080
+        CMD [ "node", "server.js" ]
+        """)
         dockerfile.close()
 
+    def touch_dockerfile():
+        """Creating dockerfile.
+        Example: ICAutoDocker.touch_dockerfile()"""
+        os.system("touch Dockerfile")
+        
     def setDestination(Input):
+        """Setting destination for filepath. (Destination is download folder)"""
         filepath = ICAutoDocker.Destination + \
             ICAutoDocker.ProgramFiles[Input]
         return filepath
