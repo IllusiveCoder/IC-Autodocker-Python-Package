@@ -73,18 +73,19 @@ class ICAutoDocker():
         Example: ICAutoDocker.delete_container("whalecontainer")"""
         os.system(f"docker rm /{containername}")
 
-    def start_container(containername:str, Port:str):
+    def start_container(containername):
+        """Starting a container.
+        Example: ICAutoDocker.start("whalecontainer")
+        """
+        os.system(f"docker start {containername}")
+            
+    def run_container(containername:str, Port:str):
         """Running a specific container, optionally with port.
         Example: ICAutoDocker.run("whalecontainer","3000")"""
         if not Port:
             os.system(f"docker run {containername}")
         else:
             os.system(f"docker run -p {Port}:{Port} {containername}")
-            
-    def run_container(containername):
-        """Running a specific container, optionally with port.
-        Example: ICAutoDocker.start("whalecontainer")"""
-        os.system(f"docker start {containername}")
 
     def stop_container(containername):
         """Stopping  the running container.
